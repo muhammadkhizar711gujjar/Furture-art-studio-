@@ -205,39 +205,25 @@ COD selected: Rs. 250 delivery charges advance.
 <input value="Rs. 250" readonly>
 
 <label>Advance Payment Reference / Transaction ID</label>
-<input id="transaction" placeholder="Enter transaction ID/reference">
+function updatePaymentInfo(){
 
-<label>Payment Method</label>
+const option =
+document.getElementById("paymentOption").value;
 
-<select id="method">
-<option>JazzCash</option>
-<option>EasyPaisa</option>
-<option>Bank Transfer</option>
-</select>
+const info =
+document.getElementById("paymentInfo");
 
-<br>
+if(option === "full"){
 
-<button class="btn" onclick="placeOrder()">
-Confirm Order
-</button>
+info.innerText =
+"Full Payment selected: Product + Rs. 250 delivery charges advance.";
 
-<p id="result"></p>
+}else{
 
-</div>
+info.innerText =
+"COD selected: Product payment delivery par, Rs. 250 delivery charges advance.";
 
-</div>
-
-<footer>
-
-<strong>Future Art Studio</strong>
-<br>
-Custom Printing & Online Orders
-<br>
-WhatsApp: 03304253605
-
-</footer>
-
-
+}
 <script>
 
 /* ==============================
