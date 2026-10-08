@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Future Art Studio</title>
+
+<style>
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5fff7;
+color:#16351f;
+}
+
+header{
+background:#0b6b35;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+header h1{
+margin:0;
+font-size:30px;
+}
+
+header p{
+margin:6px 0 0;
+}
+
+nav{
+background:#084f28;
+text-align:center;
+padding:10px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin:0 12px;
+}
+
+.hero{
+padding:45px 20px;
+text-align:center;
+background:white;
+}
+
+.hero h2{
+font-size:32px;
+margin:5px;
+}
+
+.btn{
+background:#0b8f45;
+color:white;
+border:0;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:25px 15px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:15px;
+box-shadow:0 2px 10px #0001;
+}
+
+.card img{
+width:100%;
+height:210px;
+object-fit:cover;
+border-radius:8px;
+background:#ddd;
+}
+
+.price{
+font-size:20px;
+font-weight:bold;
+color:#087a38;
+}
+
+.cart,
+.order{
+background:white;
+margin-top:25px;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px #0001;
+}
+
+input,
+textarea,
+select{
+width:100%;
+padding:12px;
+margin:7px 0 12px;
+border:1px solid #ccc;
+border-radius:7px;
+}
+
+footer{
+background:#084f28;
+color:white;
+text-align:center;
+padding:25px;
+margin-top:30px;
+}
+
+.small{
+font-size:13px;
+color:#666;
+}
+
+.hide{
+display:none;
+}
+
+.loading{
+text-align:center;
+padding:30px;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Future Art Studio</h1>
+<p>Online Products, Custom Printing & Orders</p>
+</header>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#products">Products</a>
+<a href="#order">Order</a>
+</nav>
+
+<section class="hero" id="home">
+
+<h2>Make Your Style. Make It Yours.</h2>
+
+<p>
+Custom printing, shirts, mugs, phone covers and more.
+</p>
+
+<a href="#products">
+<button class="btn">Shop Now</button>
+</a>
+
+</section>
+
+<div class="container">
+
+<h2 id="products">Our Products</h2>
+
+<div class="products" id="productList">
+<div class="loading">
+Products loading...
+</div>
+</div>
+
+
+<div class="cart">
+
+<h2>🛒 Your Cart</h2>
+
+<div id="cartList">
+Cart is empty.
+</div>
+
+<h3 id="total">
+Total: Rs. 0
+</h3>
+
+<button class="btn" onclick="goOrder()">
+Proceed to Order
+</button>
+
+</div>
+
+
+<div class="order hide" id="order">
+
+<h2>📦 Order Details</h2>
+
+<p class="small">
+Choose your payment option below.
+</p>
+
+
+<label>Payment Option</label>
+
+<select id="paymentOption" onchange="updatePaymentInfo()">
+
+<option value="cod">
+COD — Product payment on delivery, Rs. 250 delivery advance
+</option>
+
+<option value="full">
+Full Payment — Product + Delivery charges in advance
+</option>
+
+</select>
+
+
+<p id="paymentInfo" class="small">
+COD selected: Product payment delivery par,
+Rs. 250 delivery charges advance.
+</p>
+
+
+<label>Name</label>
+
+<input
+id="name"
+placeholder="Your name"
+>
+
+
+<label>Phone / WhatsApp</label>
+
+<input
+id="phone"
+placeholder="03XXXXXXXXX"
+>
+
+
+<label>City</label>
+
+<input
+id="city"
+placeholder="City"
+>
+
+
+<label>Complete Address</label>
+
+<textarea
+id="address"
+placeholder="Complete delivery address"
+></textarea>
+
+
+<label>Delivery Charges</label>
+
+<input
+value="Rs. 250"
+readonly
+>
+
+
+<label>
+Payment Reference / Transaction ID
+</label>
+
+<input
+id="transaction"
+placeholder="Enter transaction ID/reference"
+>
+
+
+<label>Payment Method</label>
+
+<select id="method">
+
+<option>JazzCash</option>
+
+<option>EasyPaisa</option>
+
+<option>Bank Transfer</option>
+
+</select>
+
+<br><br>
+
+<button
+class="btn"
+onclick="placeOrder()"
+>
+Confirm Order
+</button>
+
+<p id="result"></p>
+
+</div>
+
+</div>
+
+
+<footer>
+
+<strong>Future Art Studio</strong>
+
+<br>
+
+Custom Printing & Online Orders
+
+<br>
+
+WhatsApp: 03304253605
+
+</footer>
+
+
+<script>
+
+/* =========================
+GOOGLE APPS SCRIPT URL
+========================= */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzzbWn3DmQH9ivsbQFrb1udFM-ASKAnrKlKIwYrCM1PBpdxFF_9oP8xMUnVPZzpV2H9/exec";
+
+
+/* =========================
+PRODUCTS
+========================= */
+
+let products = [];
+
+let cart = [];
+
+
+/* =========================
+LOAD PRODUCTS
+========================= */
+
+async function loadProducts(){
+
+const box =
+document.getElementById("productList");
+
+box.innerHTML =
+'<div class="loading">Products loading...</div>';
+
+try{
+
+const response =
+await fetch(API_URL);
+
+const data =
+await response.json();
+
+if(!Array.isArray(data) || data.length === 0){
+
+box.innerHTML =
+"<p>No products found in Google Sheet.</p>";
+
+return;
+
+}
+
+products =
+data.map(p => ({
+
+name:
+p["Product Name"] || "Product",
+
+price:
+Number(p["Price"]) || 0,
+
+img:
+p["Image URL"] ||
+"https://via.placeholder.com/600x600?text=Future+Art+Studio",
+
+desc:
+p["Description"] || "",
+
+stock:
+p["Stock"] || "",
+
+category:
+p["Category"] || ""
+
+}));
+
+render();
+
+}
+
+catch(error){
+
+console.error(error);
+
+box.innerHTML =
+"<p>Products load nahi ho rahe. Google Apps Script check karein.</p>";
+
+}
+
+}
+
+
+/* =========================
+SHOW PRODUCTS
+========================= */
+
+function render(){
+
+const box =
+document.getElementById("productList");
+
+if(!products.length){
+
+box.innerHTML =
+"<p>No products available.</p>";
+
+return;
+
+}
+
+box.innerHTML =
+products.map((p,i)=>`
+
+<div class="card">
+
+<img
+src="${p.img}"
+alt="${p.name}"
+onerror="this.src='https://via.placeholder.com/600x600?text=Future+Art+Studio'"
+>
+
+<h3>${p.name}</h3>
+
+<p>${p.desc}</p>
+
+<div class="price">
+Rs. ${p.price}
+</div>
+
+${p.stock !== "" ?
+`<p class="small">Stock: ${p.stock}</p>` : ""}
+
+<button
+class="btn"
+onclick="add(${i})"
+>
+Add to Cart
+</button>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =========================
+ADD TO CART
+========================= */
+
+function add(i){
+
+cart.push(products[i]);
+
+renderCart();
+
+}
+
+
+/* =========================
+CART
+========================= */
+
+function renderCart(){
+
+const box =
+document.getElementById("cartList");
+
+if(!cart.length){
+
+box.innerHTML =
+"Cart is empty.";
+
+document.getElementById("total")
+.innerText =
+"Total: Rs. 0";
+
+return;
+
+}
+
+box.innerHTML =
+cart.map((p,i)=>`
+
+<div>
+
+${i+1}. ${p.name}
+—
+Rs. ${p.price}
+
+<button
+onclick="removeItem(${i})"
+>
+Remove
+</button>
+
+</div>
+
+<br>
+
+`).join("");
+
+
+const total =
+cart.reduce(
+(sum,p)=>sum + Number(p.price),
+0
+);
+
+document.getElementById("total")
+.innerText =
+"Total: Rs. " + total;
+
+}
+
+
+/* =========================
+REMOVE ITEM
+========================= */
+
+function removeItem(i){
+
+cart.splice(i,1);
+
+renderCart();
+
+}
+
+
+/* =========================
+GO TO ORDER
+========================= */
+
+function goOrder(){
+
+if(!cart.length){
+
+alert("Please add a product first.");
+
+return;
+
+}
+
+document
+.getElementById("order")
+.classList.remove("hide");
+
+document
+.getElementById("order")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+/* =========================
+PAYMENT OPTION MESSAGE
+========================= */
+
+function updatePaymentInfo(){
+
+const option =
+document.getElementById("paymentOption").value;
+
+const info =
+document.getElementById("paymentInfo");
+
+if(option === "full"){
+
+info.innerText =
+"Full Payment selected: Product + Rs. 250 delivery charges advance.";
+
+}else{
+
+info.innerText =
+"COD selected: Product payment delivery par, Rs. 250 delivery charges advance.";
+
+}
+
+}
+
+
+/* =========================
+PLACE ORDER
+========================= */
+
+async function placeOrder(){
+
+const name =
+document.getElementById("name")
+.value.trim();
+
+const phone =
+document.getElementById("phone")
+.value.trim();
+
+const city =
+document.getElementById("city")
+.value.trim();
+
+const address =
+document.getElementById("address")
+.value.trim();
+
+const transaction =
+document.getElementById("transaction")
+.value.trim();
+
+const method =
+document.getElementById("method")
+.value;
+
+const paymentOption =
+document.getElementById("paymentOption")
+.value;
+
+
+if(
+!name ||
+!phone ||
+!city ||
+!address ||
+!transaction
+){
+
+alert("Please fill all required fields.");
+
+return;
+
+}
+
+
+if(!cart.length){
+
+alert("Cart is empty.");
+
+return;
+
+}
+
+
+const productTotal =
+cart.reduce(
+(sum,p)=>sum + Number(p.price),
+0
+);
+
+
+const deliveryCharges = 250;
+
+
+let total;
+
+
+if(paymentOption === "full"){
+
+total =
+productTotal + deliveryCharges;
+
+}else{
+
+total =
+productTotal + deliveryCharges;
+
+}
+
+
+const productNames =
+cart
+.map(p=>p.name)
+.join(", ");
+
+
+const orderData = {
+
+customerName:
+name,
+
+customerPhone:
+phone,
+
+customerCity:
+city,
+
+customerAddress:
+address,
+
+transactionId:
+transaction,
+
+paymentMethod:
+method,
+
+paymentOption:
+paymentOption,
+
+product:
+productNames,
+
+quantity:
+cart.length,
+
+price:
+productTotal,
+
+deliveryCharges:
+deliveryCharges,
+
+total:
+total
+
+};
+
+
+const result =
+document.getElementById("result");
+
+result.innerHTML =
+"Order submit ho raha hai...";
+
+
+try{
+
+await fetch(API_URL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify(orderData)
+
+});
+
+
+const orderId =
+"FAS-" +
+Date.now()
+.toString()
+.slice(-7);
+
+
+result.innerHTML = `
+
+<b>
+Order Submitted Successfully! ✅
+</b>
+
+<br><br>
+
+Order ID:
+<strong>${orderId}</strong>
+
+<br><br>
+
+Product Amount:
+Rs. ${productTotal}
+
+<br>
+
+Delivery Charges:
+Rs. ${deliveryCharges}
+
+<br>
+
+Total:
+<strong>Rs. ${total}</strong>
+
+<br><br>
+
+Payment Option:
+<strong>
+${
+paymentOption === "full"
+?
+"Full Payment"
+:
+"COD"
+}
+</strong>
+
+`;
+
+cart = [];
+
+renderCart();
+
+}
+
+catch(error){
+
+console.error(error);
+
+result.innerHTML = `
+
+<b>
+Order request sent.
+</b>
+
+<br>
+
+Agar confirmation na aaye to
+WhatsApp par contact karein.
+
+`;
+
+}
+
+}
+
+
+/* =========================
+START
+========================= */
+
+loadProducts();
+
+renderCart();
+
+</script>
+
+</body>
+</html>
