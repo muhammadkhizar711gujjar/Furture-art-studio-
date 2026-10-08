@@ -188,12 +188,23 @@ Delivery charges must be paid in advance.
 <label>Complete Address</label>
 <textarea id="address" placeholder="Complete delivery address"></textarea>
 
+
+<label>Payment Option</label>
+
+<select id="paymentOption" onchange="updatePaymentInfo()">
+<option value="cod">COD — Product payment on delivery, Rs. 250 delivery advance</option>
+<option value="full">Full Payment — Product + Delivery charges in advance</option>
+</select>
+
+<p id="paymentInfo" class="small">
+COD selected: Rs. 250 delivery charges advance.
+</p>
+
 <label>Delivery Charges</label>
 
-<input value="Rs. 250 (Advance)" readonly>
+<input value="Rs. 250" readonly>
 
 <label>Advance Payment Reference / Transaction ID</label>
-
 <input id="transaction" placeholder="Enter transaction ID/reference">
 
 <label>Payment Method</label>
