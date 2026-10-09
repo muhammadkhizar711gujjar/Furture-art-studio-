@@ -3,847 +3,376 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Future Art Studio</title>
 
 <style>
-*{
-box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f5fff7;
-color:#16351f;
+  margin:0;font-family:Arial,sans-serif;
+  background:#f5fff7;color:#16351f
 }
-
 header{
-background:#0b6b35;
-color:white;
-padding:20px;
-text-align:center;
+  background:#0b6b35;color:white;text-align:center;
+  padding:24px 12px
 }
-
-header h1{
-margin:0;
-font-size:30px;
-}
-
-header p{
-margin:6px 0 0;
-}
-
-nav{
-background:#084f28;
-text-align:center;
-padding:10px;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-margin:0 12px;
-}
-
-.hero{
-padding:45px 20px;
-text-align:center;
-background:white;
-}
-
-.hero h2{
-font-size:32px;
-margin:5px;
-}
-
-.btn{
-background:#0b8f45;
-color:white;
-border:0;
-padding:12px 20px;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.container{
-max-width:1100px;
-margin:auto;
-padding:25px 15px;
-}
-
+header h1{margin:0 0 8px}
+header p{margin:0}
+.container{max-width:1000px;margin:auto;padding:16px}
+h2{color:#0b6b35}
 .products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:18px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px
 }
-
 .card{
-background:white;
-border-radius:12px;
-padding:15px;
-box-shadow:0 2px 10px #0001;
+  background:white;border:1px solid #d6e8da;
+  border-radius:12px;padding:14px;
+  box-shadow:0 2px 8px #0000000d
 }
-
 .card img{
-width:100%;
-height:210px;
-object-fit:cover;
-border-radius:8px;
-background:#ddd;
+  width:100%;height:180px;object-fit:contain;
+  background:#f7faf7;border-radius:8px
 }
-
-.price{
-font-size:20px;
-font-weight:bold;
-color:#087a38;
+button{
+  border:0;border-radius:7px;padding:11px 14px;
+  background:#0b6b35;color:white;font-weight:bold;
+  cursor:pointer
 }
-
-.cart,
-.order{
-background:white;
-margin-top:25px;
-padding:20px;
-border-radius:12px;
-box-shadow:0 2px 10px #0001;
+button:hover{background:#084d27}
+input,select,textarea{
+  width:100%;padding:12px;margin:6px 0 14px;
+  border:1px solid #b9cdbd;border-radius:7px;
+  font-size:15px;background:white
 }
-
-input,
-textarea,
-select{
-width:100%;
-padding:12px;
-margin:7px 0 12px;
-border:1px solid #ccc;
-border-radius:7px;
+label{font-weight:bold}
+.panel{
+  background:white;padding:18px;border-radius:12px;
+  margin:20px 0;border:1px solid #d6e8da
 }
-
+.price{font-size:19px;font-weight:bold;color:#0b6b35}
+.small{font-size:13px;color:#536b59}
+.payment-note{
+  background:#eef8ef;padding:12px;border-radius:8px;
+  margin:8px 0 14px;line-height:1.6
+}
+.cart-row{
+  display:flex;justify-content:space-between;
+  gap:12px;align-items:center;padding:10px 0;
+  border-bottom:1px solid #e4eee6
+}
 footer{
-background:#084f28;
-color:white;
-text-align:center;
-padding:25px;
-margin-top:30px;
-}
-
-.small{
-font-size:13px;
-color:#666;
-}
-
-.hide{
-display:none;
-}
-
-.loading{
-text-align:center;
-padding:30px;
-font-weight:bold;
+  background:#0b6b35;color:white;text-align:center;
+  padding:20px;margin-top:25px
 }
 </style>
 </head>
 
 <body>
-
 <header>
-<h1>Future Art Studio</h1>
-<p>Online Products, Custom Printing & Orders</p>
+  <h1>Future Art Studio</h1>
+  <p>Creative Printing • Custom Designs • Online Services</p>
+  <p>Explore Your Style With Us</p>
 </header>
 
-<nav>
-<a href="#home">Home</a>
-<a href="#products">Products</a>
-<a href="#order">Order</a>
-</nav>
+<main class="container">
+  <section>
+    <h2>Our Products</h2>
+    <p id="productStatus">Loading products...</p>
+    <div id="products" class="products"></div>
+  </section>
 
-<section class="hero" id="home">
+  <section class="panel">
+    <h2>Shopping Cart</h2>
+    <div id="cartItems">Your cart is empty.</div>
+    <p class="price">Product Total: Rs. <span id="cartTotal">0</span></p>
+    <button type="button" onclick="clearCart()">Clear Cart</button>
+  </section>
 
-<h2>Make Your Style. Make It Yours.</h2>
+  <section class="panel">
+    <h2>Place Your Order</h2>
 
-<p>
-Custom printing, shirts, mugs, phone covers and more.
-</p>
+    <form id="orderForm">
+      <label for="customerName">Full Name</label>
+      <input id="customerName" required placeholder="Enter your full name">
 
-<a href="#products">
-<button class="btn">Shop Now</button>
-</a>
+      <label for="phone">Phone Number</label>
+      <input id="phone" required type="tel" placeholder="03XXXXXXXXX">
 
-</section>
+      <label for="address">Complete Delivery Address</label>
+      <textarea id="address" required rows="3"
+        placeholder="House, street, city and district"></textarea>
 
-<div class="container">
+      <label for="courier">Select Courier Service</label>
+      <select id="courier" required>
+        <option value="PostEx">PostEx</option>
+        <option value="TCS">TCS</option>
+        <option value="Leopards Courier">Leopards Courier</option>
+        <option value="Pakistan Post Office">Pakistan Post Office</option>
+      </select>
 
-<h2 id="products">Our Products</h2>
+      <label for="paymentOption">Payment Option</label>
+      <select id="paymentOption" required onchange="updatePaymentInfo()">
+        <option value="advance">Advance Delivery Payment — Rs. 250</option>
+        <option value="full">Full Payment — Product + Rs. 250</option>
+      </select>
 
-<div class="products" id="productList">
-<div class="loading">
-Products loading...
-</div>
-</div>
+      <div class="payment-note" id="paymentInfo">
+        Pay Rs. 250 in advance for delivery. Pay the remaining product amount
+        when your order arrives.
+      </div>
 
+      <p>Product Total: Rs. <strong id="formProductTotal">0</strong></p>
+      <p>Delivery Charges: Rs. <strong>250</strong></p>
+      <p class="price">Pay Now: Rs. <span id="payNow">250</span></p>
+      <p id="remainingInfo" class="small"></p>
 
-<div class="cart">
+      <label for="transactionId">Payment Transaction ID / Reference</label>
+      <input id="transactionId" required
+        placeholder="Enter transaction reference after payment">
 
-<h2>🛒 Your Cart</h2>
+      <label for="notes">Order Notes (Optional)</label>
+      <textarea id="notes" rows="2"
+        placeholder="Size, colour or other instructions"></textarea>
 
-<div id="cartList">
-Cart is empty.
-</div>
-
-<h3 id="total">
-Total: Rs. 0
-</h3>
-
-<button class="btn" onclick="goOrder()">
-Proceed to Order
-</button>
-
-</div>
-
-
-<div class="order hide" id="order">
-
-<h2>📦 Order Details</h2>
-
-<p class="small">
-Choose your payment option below.
-</p>
-
-
-<label>Payment Option</label>
-
-<select id="paymentOption" onchange="updatePaymentInfo()">
-
-<option value="cod">
-COD — Product payment on delivery, Rs. 250 delivery advance
-</option>
-
-<option value="full">
-Full Payment — Product + Delivery charges in advance
-</option>
-
-</select>
-
-
-<p id="paymentInfo" class="small">
-COD selected: Product payment delivery par,
-Rs. 250 delivery charges advance.
-</p>
-
-
-<label>Name</label>
-
-<input
-id="name"
-placeholder="Your name"
->
-
-
-<label>Phone / WhatsApp</label>
-
-<input
-id="phone"
-placeholder="03XXXXXXXXX"
->
-
-
-<label>City</label>
-
-<input
-id="city"
-placeholder="City"
->
-
-
-<label>Complete Address</label>
-
-<textarea
-id="address"
-placeholder="Complete delivery address"
-></textarea>
-
-
-<label>Delivery Charges</label>
-
-<input
-value="Rs. 250"
-readonly
->
-
-
-<label>
-Payment Reference / Transaction ID
-</label>
-
-<input
-id="transaction"
-placeholder="Enter transaction ID/reference"
->
-
-
-<label>Payment Method</label>
-
-<select id="method">
-
-<option>JazzCash</option>
-
-<option>EasyPaisa</option>
-
-<option>Bank Transfer</option>
-
-</select>
-
-<br><br>
-
-<button
-class="btn"
-onclick="placeOrder()"
->
-Confirm Order
-</button>
-
-<p id="result"></p>
-
-</div>
-
-</div>
-
+      <button type="submit" id="submitOrder">Submit Order</button>
+      <p id="orderStatus" role="status"></p>
+      <p class="small">
+        Please verify payment instructions with Future Art Studio before
+        transferring money. Submitting this form does not itself make a payment.
+      </p>
+    </form>
+  </section>
+</main>
 
 <footer>
-
-<strong>Future Art Studio</strong>
-
-<br>
-
-Custom Printing & Online Orders
-
-<br>
-
-WhatsApp: 03304253605
-
+  <strong>Future Art Studio</strong>
+  <p>Thank you for choosing our business!</p>
 </footer>
 
-
 <script>
-
-/* =========================
-GOOGLE APPS SCRIPT URL
-========================= */
-
 const API_URL =
 "https://script.google.com/macros/s/AKfycbzzbWn3DmQH9ivsbQFrb1udFM-ASKAnrKlKIwYrCM1PBpdxFF_9oP8xMUnVPZzpV2H9/exec";
 
-
-/* =========================
-PRODUCTS
-========================= */
-
 let products = [];
-
 let cart = [];
 
-
-/* =========================
-LOAD PRODUCTS
-========================= */
-
-async function loadProducts(){
-
-const box =
-document.getElementById("productList");
-
-box.innerHTML =
-'<div class="loading">Products loading...</div>';
-
-try{
-
-const response =
-await fetch(API_URL);
-
-const data =
-await response.json();
-
-if(!Array.isArray(data) || data.length === 0){
-
-box.innerHTML =
-"<p>No products found in Google Sheet.</p>";
-
-return;
-
+function money(value) {
+  return Math.round(Number(value) || 0).toLocaleString("en-PK");
 }
 
-products =
-data.map(p => ({
-
-name:
-p["Product Name"] || "Product",
-
-price:
-Number(p["Price"]) || 0,
-
-img:
-p["Image URL"] ||
-"https://via.placeholder.com/600x600?text=Future+Art+Studio",
-
-desc:
-p["Description"] || "",
-
-stock:
-p["Stock"] || "",
-
-category:
-p["Category"] || ""
-
-}));
-
-render();
-
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[char]);
 }
 
-catch(error){
+async function loadProducts() {
+  const status = document.getElementById("productStatus");
+  status.textContent = "Loading products...";
 
-console.error(error);
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Product request failed");
 
-box.innerHTML =
-"<p>Products load nahi ho rahe. Google Apps Script check karein.</p>";
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error("Expected a product list from Google Sheets");
+    }
 
+    products = data;
+    renderProducts();
+    status.textContent = products.length
+      ? "Products loaded."
+      : "No products found. Please check your Google Sheet.";
+  } catch (error) {
+    status.textContent =
+      "Products could not load. Please check the Apps Script connection.";
+  }
 }
 
+function renderProducts() {
+  const area = document.getElementById("products");
+
+  if (!products.length) {
+    area.innerHTML = "<p>No products available right now.</p>";
+    return;
+  }
+
+  area.innerHTML = products.map((p, i) => {
+    const name = p["Product Name"] || "Product";
+    const description = p["Description"] || "";
+    const price = Number(p["Price"]) || 0;
+    const image = String(p["Image URL"] || "");
+    const stock = p["Stock"];
+    const soldOut = stock !== "" && stock != null &&
+      Number(stock) <= 0;
+
+    return `
+      <article class="card">
+        <img src="${safeText(image)}"
+          alt="${safeText(name)}"
+          onerror="this.style.display='none'">
+        <h3>${safeText(name)}</h3>
+        <p>${safeText(description)}</p>
+        <p class="price">Rs. ${money(price)}</p>
+        <p class="small">Category: ${safeText(p["Category"] || "General")}</p>
+        <button type="button" onclick="addToCart(${i})"
+          ${soldOut ? "disabled" : ""}>
+          ${soldOut ? "Out of Stock" : "Add to Cart"}
+        </button>
+      </article>`;
+  }).join("");
 }
 
+function addToCart(index) {
+  const p = products[index];
+  if (!p) return;
 
-/* =========================
-SHOW PRODUCTS
-========================= */
+  const name = p["Product Name"] || "Product";
+  const price = Number(p["Price"]) || 0;
+  const existing = cart.find(item => item.name === name);
 
-function render(){
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({name, price, quantity:1});
+  }
 
-const box =
-document.getElementById("productList");
-
-if(!products.length){
-
-box.innerHTML =
-"<p>No products available.</p>";
-
-return;
-
+  renderCart();
 }
 
-box.innerHTML =
-products.map((p,i)=>`
+function renderCart() {
+  const area = document.getElementById("cartItems");
 
-<div class="card">
+  if (!cart.length) {
+    area.textContent = "Your cart is empty.";
+  } else {
+    area.innerHTML = cart.map((item, index) => `
+      <div class="cart-row">
+        <div>
+          <strong>${safeText(item.name)}</strong><br>
+          Rs. ${money(item.price)} × ${item.quantity}
+        </div>
+        <div>
+          <button type="button" onclick="changeQuantity(${index},-1)">−</button>
+          <button type="button" onclick="changeQuantity(${index},1)">+</button>
+        </div>
+      </div>`).join("");
+  }
 
-<img
-src="${p.img}"
-alt="${p.name}"
-onerror="this.src='https://via.placeholder.com/600x600?text=Future+Art+Studio'"
->
-
-<h3>${p.name}</h3>
-
-<p>${p.desc}</p>
-
-<div class="price">
-Rs. ${p.price}
-</div>
-
-${p.stock !== "" ?
-`<p class="small">Stock: ${p.stock}</p>` : ""}
-
-<button
-class="btn"
-onclick="add(${i})"
->
-Add to Cart
-</button>
-
-</div>
-
-`).join("");
-
+  document.getElementById("cartTotal").textContent = money(getTotal());
+  document.getElementById("formProductTotal").textContent = money(getTotal());
+  updatePaymentInfo();
 }
 
+function changeQuantity(index, change) {
+  if (!cart[index]) return;
+  cart[index].quantity += change;
 
-/* =========================
-ADD TO CART
-========================= */
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  }
+  renderCart();
+}
 
-function add(i){
+function clearCart() {
+  cart = [];
+  renderCart();
+}
 
-cart.push(products[i]);
+function getTotal() {
+  return cart.reduce((sum, item) =>
+    sum + item.price * item.quantity, 0);
+}
+
+function updatePaymentInfo() {
+  const method = document.getElementById("paymentOption").value;
+  const total = getTotal();
+  const payNow = method === "advance" ? 250 : total + 250;
+  const remaining = method === "advance" ? total : 0;
+
+  document.getElementById("paymentInfo").textContent =
+    method === "advance"
+      ? "Advance Delivery: Pay Rs. 250 now. Pay the product amount of Rs. " +
+        money(total) + " when the order arrives."
+      : "Full Payment: Pay the product amount plus Rs. 250 delivery. Total: Rs. " +
+        money(total + 250) + ".";
+
+  document.getElementById("payNow").textContent = money(payNow);
+  document.getElementById("remainingInfo").textContent =
+    method === "advance"
+      ? "Remaining amount payable on delivery: Rs. " + money(remaining)
+      : "Remaining amount on delivery: Rs. 0";
+}
+
+document.getElementById("orderForm").addEventListener("submit",
+  async function(event) {
+    event.preventDefault();
+
+    if (!cart.length) {
+      alert("Please add at least one product to your cart.");
+      return;
+    }
+
+    const button = document.getElementById("submitOrder");
+    const status = document.getElementById("orderStatus");
+    const method = document.getElementById("paymentOption").value;
+    const total = getTotal();
+
+    const order = {
+      orderId: "FAS-" + Date.now(),
+      date: new Date().toISOString(),
+      customerName: document.getElementById("customerName").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      address: document.getElementById("address").value.trim(),
+      courier: document.getElementById("courier").value,
+      paymentOption: method,
+      productTotal: total,
+      deliveryCharges: 250,
+      payNow: method === "advance" ? 250 : total + 250,
+      remainingOnDelivery: method === "advance" ? total : 0,
+      transactionId: document.getElementById("transactionId").value.trim(),
+      notes: document.getElementById("notes").value.trim(),
+      items: cart.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      }))
+    };
+
+    button.disabled = true;
+    status.textContent = "Sending order...";
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify(order)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.success === false || result.error) {
+        throw new Error(result.error || "Order could not be confirmed");
+      }
+
+      status.textContent =
+        "Server response received. Please verify the order in your Google Sheet.";
+      alert("Order request sent. Please confirm the order with Future Art Studio.");
+      clearCart();
+      document.getElementById("orderForm").reset();
+      updatePaymentInfo();
+
+    } catch (error) {
+      status.textContent =
+        "Order could not be confirmed. Please check Apps Script and Google Sheet before trying again.";
+    } finally {
+      button.disabled = false;
+    }
+  });
 
 renderCart();
-
-}
-
-
-/* =========================
-CART
-========================= */
-
-function renderCart(){
-
-const box =
-document.getElementById("cartList");
-
-if(!cart.length){
-
-box.innerHTML =
-"Cart is empty.";
-
-document.getElementById("total")
-.innerText =
-"Total: Rs. 0";
-
-return;
-
-}
-
-box.innerHTML =
-cart.map((p,i)=>`
-
-<div>
-
-${i+1}. ${p.name}
-—
-Rs. ${p.price}
-
-<button
-onclick="removeItem(${i})"
->
-Remove
-</button>
-
-</div>
-
-<br>
-
-`).join("");
-
-
-const total =
-cart.reduce(
-(sum,p)=>sum + Number(p.price),
-0
-);
-
-document.getElementById("total")
-.innerText =
-"Total: Rs. " + total;
-
-}
-
-
-/* =========================
-REMOVE ITEM
-========================= */
-
-function removeItem(i){
-
-cart.splice(i,1);
-
-renderCart();
-
-}
-
-
-/* =========================
-GO TO ORDER
-========================= */
-
-function goOrder(){
-
-if(!cart.length){
-
-alert("Please add a product first.");
-
-return;
-
-}
-
-document
-.getElementById("order")
-.classList.remove("hide");
-
-document
-.getElementById("order")
-.scrollIntoView({
-behavior:"smooth"
-});
-
-}
-
-
-/* =========================
-PAYMENT OPTION MESSAGE
-========================= */
-
-function updatePaymentInfo(){
-
-const option =
-document.getElementById("paymentOption").value;
-
-const info =
-document.getElementById("paymentInfo");
-
-if(option === "full"){
-
-info.innerText =
-"Full Payment selected: Product + Rs. 250 delivery charges advance.";
-
-}else{
-
-info.innerText =
-"COD selected: Product payment delivery par, Rs. 250 delivery charges advance.";
-
-}
-
-}
-
-
-/* =========================
-PLACE ORDER
-========================= */
-
-async function placeOrder(){
-
-const name =
-document.getElementById("name")
-.value.trim();
-
-const phone =
-document.getElementById("phone")
-.value.trim();
-
-const city =
-document.getElementById("city")
-.value.trim();
-
-const address =
-document.getElementById("address")
-.value.trim();
-
-const transaction =
-document.getElementById("transaction")
-.value.trim();
-
-const method =
-document.getElementById("method")
-.value;
-
-const paymentOption =
-document.getElementById("paymentOption")
-.value;
-
-
-if(
-!name ||
-!phone ||
-!city ||
-!address ||
-!transaction
-){
-
-alert("Please fill all required fields.");
-
-return;
-
-}
-
-
-if(!cart.length){
-
-alert("Cart is empty.");
-
-return;
-
-}
-
-
-const productTotal =
-cart.reduce(
-(sum,p)=>sum + Number(p.price),
-0
-);
-
-
-const deliveryCharges = 250;
-
-
-let total;
-
-
-if(paymentOption === "full"){
-
-total =
-productTotal + deliveryCharges;
-
-}else{
-
-total =
-productTotal + deliveryCharges;
-
-}
-
-
-const productNames =
-cart
-.map(p=>p.name)
-.join(", ");
-
-
-const orderData = {
-
-customerName:
-name,
-
-customerPhone:
-phone,
-
-customerCity:
-city,
-
-customerAddress:
-address,
-
-transactionId:
-transaction,
-
-paymentMethod:
-method,
-
-paymentOption:
-paymentOption,
-
-product:
-productNames,
-
-quantity:
-cart.length,
-
-price:
-productTotal,
-
-deliveryCharges:
-deliveryCharges,
-
-total:
-total
-
-};
-
-
-const result =
-document.getElementById("result");
-
-result.innerHTML =
-"Order submit ho raha hai...";
-
-
-try{
-
-await fetch(API_URL,{
-
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json"
-},
-
-body:
-JSON.stringify(orderData)
-
-});
-
-
-const orderId =
-"FAS-" +
-Date.now()
-.toString()
-.slice(-7);
-
-
-result.innerHTML = `
-
-<b>
-Order Submitted Successfully! ✅
-</b>
-
-<br><br>
-
-Order ID:
-<strong>${orderId}</strong>
-
-<br><br>
-
-Product Amount:
-Rs. ${productTotal}
-
-<br>
-
-Delivery Charges:
-Rs. ${deliveryCharges}
-
-<br>
-
-Total:
-<strong>Rs. ${total}</strong>
-
-<br><br>
-
-Payment Option:
-<strong>
-${
-paymentOption === "full"
-?
-"Full Payment"
-:
-"COD"
-}
-</strong>
-
-`;
-
-cart = [];
-
-renderCart();
-
-}
-
-catch(error){
-
-console.error(error);
-
-result.innerHTML = `
-
-<b>
-Order request sent.
-</b>
-
-<br>
-
-Agar confirmation na aaye to
-WhatsApp par contact karein.
-
-`;
-
-}
-
-}
-
-
-/* =========================
-START
-========================= */
-
 loadProducts();
-
-renderCart();
-
 </script>
-
 </body>
 </html>
